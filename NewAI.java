@@ -1,6 +1,6 @@
 public class NewAI extends AIModule
 {
-	public void getNextMove(final GameStateModule game)
+	/*public void getNextMove(final GameStateModule game)
 	{
         int n;
         int val = -10001;
@@ -13,10 +13,35 @@ public class NewAI extends AIModule
                 val = -n;
                 move = i;
             }
+            game.unMakeMove();
         }
         //System.out.print(i);
-        chosenMove = move;
-	}
+        chosenMove = move + 1;
+	}*/
+    public void getNextMove(final GameStateModule game)
+    {
+        int score;
+        int[] values = new int[game.getWidth()];
+        for(int i = 0; i < game.getWidth(); i++)
+        {
+            if (game.canMakeMove(i))
+            {
+                game.makeMove(i);
+                score = minimax(game, 1, 0);
+                values[i] = score;
+                game.unMakeMove();
+            }
+        }
+        System.out.print("\n\nNEW TURN:\n");
+        int bestmove = -1;
+        int bestscore = -999;
+        for(int i = 0; i < game.getWidth(); i++)
+        {
+            if(values[i] >= bestscore) bestmove = i;
+        }
+        
+        chosenMove = bestmove;
+    }
     
     
     
@@ -97,18 +122,20 @@ public class NewAI extends AIModule
         if(player == 1)
         {
             score = -9999;
-            for(int i = 0; i < width; ++i)
+            for(int i = 0; i < 7; ++i)
             {
                 if (game.canMakeMove(i))
                 {
                     game.makeMove(i);
                     oppscore = minimax(game, player*-1, depth + 1);
+                    System.out.print(i+"-"+oppscore+" ");
                     if(oppscore > score) {
                         score = oppscore;
                         scorepos = i;}
                     game.unMakeMove();
                 }
             }
+            System.out.print("\nNEW LEVEL\n");
 
         }
         
@@ -116,7 +143,7 @@ public class NewAI extends AIModule
         else
         {
             score = 9999;
-            for(int i = 0; i < width; ++i)
+            for(int i = 0; i < 7; ++i)
             {
                 if (game.canMakeMove(i))
                 {
@@ -141,19 +168,16 @@ public class NewAI extends AIModule
             oppo = 2; }
         else {
             oppo = 1; }
+
         // check horizontals
         for (int i = 0; i <= 3; ++i){
             for (int j = 0; j < 7; ++j) {
                 int[] horiz = new int[4];
-                int[] vert = new int[4];
+                
                 horiz[0] = game.getAt(i,j);
                 horiz[1] = game.getAt(i+1,j);
                 horiz[2] = game.getAt(i+2,j);
                 horiz[3] = game.getAt(i+3,j);
-                vert[0] = game.getAt(i,j);
-                vert[1] = game.getAt(i,j+1);
-                vert[2] = game.getAt(i,j+2);
-                vert[3] = game.getAt(i,j+3);
 
 
                 if ((game.getAt(i,j) == currentPlayer || game.getAt(i,j) == 0) && (game.getAt(i + 1,j) == currentPlayer || game.getAt(i + 1,j) == 0)  && (game.getAt(i + 2,j) == currentPlayer || game.getAt(i + 2,j) == 0)  && (game.getAt(i + 3,j) == currentPlayer || game.getAt(i + 3,j) == 0)) {
@@ -173,27 +197,47 @@ public class NewAI extends AIModule
                     int count = 0;
                     int pc = 0;
                     while (count < 4) {
-                        if (vert[count] == currentPlayer)
+                        if (horiz[count] == currentPlayer)
                             pc++;
                         count++; }
                     
-                    result = result - (pc*5 +1); }
+                    result = result - (pc*10 +1); }
                 
  
                 
-
             }
-        }
+            }
+        
         
         // check verticals
         for (int i = 0; i < 7; ++i){
             for (int j = 0; j <= 3; ++j) {
+                int[] vert = new int[4];
+                vert[0] = game.getAt(i,j);
+                vert[1] = game.getAt(i,j+1);
+                vert[2] = game.getAt(i,j+2);
+                vert[3] = game.getAt(i,j+3);
                 
                 if ((game.getAt(i,j) == currentPlayer || game.getAt(i,j) == 0) && (game.getAt(i,j+1) == currentPlayer || game.getAt(i,j+1) == 0)  && (game.getAt(i,j+2) == currentPlayer || game.getAt(i,j+2) == 0)  && (game.getAt(i,j+3) == currentPlayer || game.getAt(i,j+3) == 0)) {
-                    result++; }
+                    int count = 0;
+                    int pc = 0;
+                    while (count < 4) {
+                        if (vert[count] == currentPlayer)
+                            pc++;
+                        count++; }
+                    
+                    result = result + (pc*5 +1);
+                }
 
                 if ((game.getAt(i,j) == oppo || game.getAt(i,j) == 0) && (game.getAt(i,j+1) == oppo || game.getAt(i,j+1) == 0)  && (game.getAt(i,j+2) == oppo || game.getAt(i,j+2) == 0)  && (game.getAt(i,j+3) == oppo || game.getAt(i,j+3) == 0)) {
-                    result--; }
+                    int count = 0;
+                    int pc = 0;
+                    while (count < 4) {
+                        if (vert[count] == currentPlayer)
+                            pc++;
+                        count++; }
+                    
+                    result = result - (pc*10 +1); }
             }
         }
         
