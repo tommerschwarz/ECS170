@@ -128,14 +128,14 @@ public class NewAI extends AIModule
                 {
                     game.makeMove(i);
                     oppscore = minimax(game, player*-1, depth + 1);
-                    System.out.print(i+"-"+oppscore+" ");
+                    //System.out.print(i+"-"+oppscore+" ");
                     if(oppscore > score) {
                         score = oppscore;
                         scorepos = i;}
                     game.unMakeMove();
                 }
             }
-            System.out.print("\nNEW LEVEL\n");
+            //System.out.print("\nNEW LEVEL\n");
 
         }
         
@@ -156,7 +156,7 @@ public class NewAI extends AIModule
                 }
             }
         }
-        System.out.print("RETURNED:"+scorepos+"-"+score+"\n\n");
+        //System.out.print("RETURNED:"+scorepos+"-"+score+"\n\n");
         return score;
     }
     
@@ -197,11 +197,10 @@ public class NewAI extends AIModule
                     int count = 0;
                     int pc = 0;
                     while (count < 4) {
-                        if (horiz[count] == currentPlayer)
+                        if (horiz[count] == oppo)
                             pc++;
                         count++; }
-                    
-                    result = result - (pc*10 +1); }
+                    result = result - (pc*1000 +1); }
                 
  
                 
@@ -233,7 +232,7 @@ public class NewAI extends AIModule
                     int count = 0;
                     int pc = 0;
                     while (count < 4) {
-                        if (vert[count] == currentPlayer)
+                        if (vert[count] == oppo)
                             pc++;
                         count++; }
                     
