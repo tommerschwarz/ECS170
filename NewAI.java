@@ -156,8 +156,8 @@ public class NewAI extends AIModule
                 }
             }
         }
-        
-        return scorepos - 1;
+        System.out.print("RETURNED:"+scorepos+"-"+score+"\n\n");
+        return score;
     }
     
     public int heuristic (final GameStateModule game){
