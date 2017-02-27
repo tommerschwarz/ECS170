@@ -38,16 +38,23 @@ public class NewAI extends AIModule
         for(int i = 0; i < game.getWidth(); i++)
         {
             System.out.print(values[i]+"\n");
+            if (!game.canMakeMove(i)){
+                System.out.print("HEHREHRHEHRE");
+                continue;
+            }
             game.makeMove(i);
             if (game.isGameOver()){
                 bestmove = i;
                 break;
             }
             game.unMakeMove();
+
             if(values[i] > bestscore && game.canMakeMove(i)) {
                 bestscore = values[i];
                 bestmove = i;}
+
         }
+
         System.out.print("bestmove:"+bestmove);
        
         
@@ -119,9 +126,9 @@ public class NewAI extends AIModule
         if(isWinningMove(game))
         {
             if(player == 1){
-                return 999;}
+                return -999999;}
             else {
-                return -999; }
+                return 999999; }
             
         }
         
@@ -132,7 +139,7 @@ public class NewAI extends AIModule
         //MAX
         if(player == 1)
         {
-            score = -9999;
+            score = -99999;
             for(int i = 0; i < 7; ++i)
             {
                 if (game.canMakeMove(i))
@@ -156,7 +163,8 @@ public class NewAI extends AIModule
         //MIN
         else
         {
-            score = 9999;
+            score = 99999;
+            System.out.print("\n");
             for(int i = 0; i < 7; ++i)
             {
                 if (game.canMakeMove(i))
@@ -164,7 +172,6 @@ public class NewAI extends AIModule
                     game.makeMove(i);
                     oppscore = minimax(game, player*-1, depth + 1);
                     if(oppscore < score) {
-                        System.out.print("HEREHEREHERE");
                         score = oppscore;
                         scorepos = i;}
                     game.unMakeMove();
@@ -214,7 +221,10 @@ public class NewAI extends AIModule
         //System.out.print("RESULT:"+result+"\n");
         
         return result;
-                         }
+                         } */
+          
+              ////////
+    /*
     boolean oppoWin (final GameStateModule game) {
         
         for (int i = 0; i < 7; i++) {
@@ -243,9 +253,9 @@ public class NewAI extends AIModule
     } */
     
     
-    ////////
+
     
-    
+    /*
     public int heuristic (final GameStateModule game)
     {
         int player = game.getActivePlayer();
@@ -393,9 +403,245 @@ public class NewAI extends AIModule
         return -score;
     }
     
-    
+    */
     
 ////////////
+    
+    public int heuristic (final GameStateModule game)
+    {
+        int player = game.getActivePlayer();
+        int oppo;
+        int oppothreat;
+        int threat;
+        if (player == 1){
+            oppo = 2;
+            threat = 1;
+            oppothreat = 0;
+        }
+        else {
+            oppo = 1;
+            threat = 0;
+            oppothreat = 1;
+        }
+        //if player = 1 then favor odd threats
+        //if player = 2 then favor even threats
+        //determined by row % 2
+        
+        int score = 0;
+        
+        //initialize threats value table
+        int [][]threats = new int[7][6];
+        for(int i = 0; i < game.getWidth(); i++)
+        {
+            for(int j = 0; j < game.getHeight(); j++)
+            {
+                threats[i][j] = 0;
+            }
+        }
+        
+        //check horizontals
+        for(int i = 0; i < game.getWidth() - 3; i++)
+        {
+            for(int j = 0; j < game.getHeight(); j++)
+            {
+                //if blocked, continue
+                if(game.getAt(i,j)==oppo || game.getAt(i+1,j)==oppo || game.getAt(i+2,j)==oppo || game.getAt(i+3,j)==oppo)
+                    continue;
+                else
+                {
+                    int count = 0;
+                    //checks how many coins are in this block
+                    for(int q = 0; q < 4; q++)
+                    {
+                        if(game.getAt(i+q,j)==player) count++;
+                    }
+                    //add to position's value
+                    for(int q = 0; q < 4; q++)
+                    {
+                        //if empty position, add to values array; else do nothing
+                        if(game.getAt(i+q,j)==0)
+                            threats[i+q][j] += 10^(count+(threat+j)%2);// + dosomethingforthreat);
+                    }
+                }
+            }
+            //subtract by opponent's horizontal score
+            for(int j = 0; j < game.getHeight(); j++)
+            {
+                //if blocked, continue
+                if(game.getAt(i,j)==player || game.getAt(i+1,j)==player || game.getAt(i+2,j)==player || game.getAt(i+3,j)==player)
+                    continue;
+                else
+                {
+                    int count = 0;
+                    //checks how many coins are in this block
+                    for(int q = 0; q < 4; q++)
+                    {
+                        if(game.getAt(i+q,j)==oppo) count++;
+                    }
+                    //add to position's value
+                    for(int q = 0; q < 4; q++)
+                    {
+                        //if empty position, add to values array; else do nothing
+                        if(game.getAt(i+q,j)==0)
+                            threats[i+q][j] -= 10^(count+(oppothreat+j)%2);// + dosomethingforthreat);
+                    }
+                }
+            }
+            
+        }
+        
+        //check for right diagonals
+        for(int i = 0; i < game.getWidth() - 3; i++)
+        {
+            for(int j = 0; j < game.getHeight()-3; j++)
+            {
+                //if blocked, continue
+                if(game.getAt(i,j)==oppo || game.getAt(i+1,j+1)==oppo || game.getAt(i+2,j+2)==oppo || game.getAt(i+3,j+3)==oppo)
+                    continue;
+                else
+                {
+                    int count = 0;
+                    //checks how many coins are in this block
+                    for(int q = 0; q < 4; q++)
+                    {
+                        if(game.getAt(i+q,j+q)==player) count++;
+                    }
+                    //add to position's value
+                    for(int q = 0; q < 4; q++)
+                    {
+                        //if empty position, add to values array; else do nothing
+                        if(game.getAt(i+q,j+q)==0)
+                            threats[i+q][j+q] += 10^(count+(threat+j)%2);// + dosomethingforthreat);
+                    }
+                }
+            }
+            //subtract by opponent's right diagonal score
+            for(int j = 0; j < game.getHeight()-3; j++)
+            {
+                //if blocked, continue
+                if(game.getAt(i,j)==player || game.getAt(i+1,j+1)==player || game.getAt(i+2,j+2)==player || game.getAt(i+3,j+3)==player)
+                    continue;
+                else
+                {
+                    int count = 0;
+                    //checks how many coins are in this block
+                    for(int q = 0; q < 4; q++)
+                    {
+                        if(game.getAt(i+q,j+q)==oppo) count++;
+                    }
+                    //add to position's value
+                    for(int q = 0; q < 4; q++)
+                    {
+                        //if empty position, add to values array; else do nothing
+                        if(game.getAt(i+q,j+q)==0)
+                            threats[i+q][j+q] -= 10^(count+(oppothreat+j)%2);// + dosomethingforthreat);
+                    }
+                }
+            }
+        }
+        
+        //check for left diagonals
+        for(int i = 3; i < game.getWidth(); i++)
+        {
+            for(int j = 0; j < game.getHeight()-3; j++)
+            {
+                //if blocked, continue
+                if(game.getAt(i,j)==oppo || game.getAt(i-1,j+1)==oppo || game.getAt(i-2,j+2)==oppo || game.getAt(i-3,j+3)==oppo)
+                    continue;
+                else
+                {
+                    int count = 0;
+                    //checks how many coins are in this block
+                    for(int q = 0; q < 4; q++)
+                    {
+                        if(game.getAt(i-q,j+q)==player) count++;
+                    }
+                    //add to position's value
+                    for(int q = 0; q < 4; q++)
+                    {
+                        //if empty position, add to values array; else do nothing
+                        if(game.getAt(i-q,j+q)==0)
+                            threats[i-q][j+q] += 10^(count+(threat+j)%2); // + dosomethingforthreat);
+                    }
+                }
+            }
+            //subtract by opponent's left diagonal
+            for(int j = 0; j < game.getHeight()-3; j++)
+            {
+                //if blocked, continue
+                if(game.getAt(i,j)==player || game.getAt(i-1,j+1)==player || game.getAt(i-2,j+2)==player || game.getAt(i-3,j+3)==player)
+                    continue;
+                else
+                {
+                    int count = 0;
+                    //checks how many coins are in this block
+                    for(int q = 0; q < 4; q++)
+                    {
+                        if(game.getAt(i-q,j+q)==oppo) count++;
+                    }
+                    //add to position's value
+                    for(int q = 0; q < 4; q++)
+                    {
+                        //if empty position, add to values array; else do nothing
+                        if(game.getAt(i-q,j+q)==0)
+                            threats[i-q][j+q] -= 10^(count+(oppothreat+j)%2); // + dosomethingforthreat);
+                    }
+                }
+            }
+        }
+        
+        //check for verticals
+        for(int i = 0; i < game.getWidth(); i++)
+        {
+            for(int j = 3; j < game.getHeight(); j++)
+            {
+                //if blocked, continue
+                if(game.getAt(i,j)==oppo || game.getAt(i,j-1)==oppo || game.getAt(i,j-2)==oppo || game.getAt(i,j-3)==oppo)
+                    continue;
+                else
+                {
+                    int count = 0;
+                    //checks how many coins are in this block
+                    for(int q = 0; q < 4; q++)
+                    {
+                        if(game.getAt(i,j-q)==player) count++;
+                    }
+                    //if empty position, add to values array; else do nothing
+                    if(game.getAt(i,j)==0)
+                        threats[i][j] += 10^count;
+                }
+            }
+            //subtract by opponent's verticals
+            for(int j = 3; j < game.getHeight(); j++)
+            {
+                //if blocked, continue
+                if(game.getAt(i,j)==player || game.getAt(i,j-1)==player || game.getAt(i,j-2)==player || game.getAt(i,j-3)==player)
+                    continue;
+                else
+                {
+                    int count = 0;
+                    //checks how many coins are in this block
+                    for(int q = 0; q < 4; q++)
+                    {
+                        if(game.getAt(i,j-q)==oppo) count++;
+                    }
+                    //if empty position, add to values array; else do nothing
+                    if(game.getAt(i,j)==0)
+                        threats[i][j] -= 10^count;
+                }
+            }
+        }
+        
+        for(int i = 0; i < game.getWidth(); i++)
+        {
+            for(int j = 0; j < game.getHeight(); j++)
+            {
+                score += threats[i][j];
+            }
+        }
+        
+        return score;
+    }
     
     
     
