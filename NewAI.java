@@ -164,6 +164,7 @@ public class NewAI extends AIModule
                     game.makeMove(i);
                     oppscore = minimax(game, player*-1, depth + 1);
                     if(oppscore < score) {
+                        System.out.print("HEREHEREHERE");
                         score = oppscore;
                         scorepos = i;}
                     game.unMakeMove();
@@ -298,7 +299,7 @@ public class NewAI extends AIModule
                     {
                         //if empty position, add to values array; else do nothing
                         if(game.getAt(i+q,j)==0)
-                            threats[i+q][j] += 5^(count);// + dosomethingforthreat);
+                            threats[i+q][j] += 10^(count+(threat+j)%2);// + dosomethingforthreat);
                             }
                 }
             }
@@ -325,7 +326,7 @@ public class NewAI extends AIModule
                     {
                         //if empty position, add to values array; else do nothing
                         if(game.getAt(i+q,j+q)==0)
-                            threats[i+q][j+q] += 5^(count);// + dosomethingforthreat);
+                            threats[i+q][j+q] += 10^(count+(threat+j)%2);// + dosomethingforthreat);
                     }
                 }
             }
@@ -352,7 +353,7 @@ public class NewAI extends AIModule
                     {
                         //if empty position, add to values array; else do nothing
                         if(game.getAt(i-q,j+q)==0)
-                            threats[i-q][j+q] += 5^(count);// + dosomethingforthreat);
+                            threats[i-q][j+q] += 10^(count+(threat+j)%2); // + dosomethingforthreat);
                     }
                 }
             }
@@ -376,7 +377,7 @@ public class NewAI extends AIModule
                     }
                     //if empty position, add to values array; else do nothing
                     if(game.getAt(i,j)==0) 
-                        threats[i][j] += 5^count;
+                        threats[i][j] += 10^count;
                 }
             }
         }
