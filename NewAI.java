@@ -32,28 +32,32 @@ public class NewAI extends AIModule
                 game.unMakeMove();
             }
         }
+        
         System.out.print("\n\nNEW TURN:\n");
         int bestmove = -1;
         int bestscore = -10000;
         for(int i = 0; i < game.getWidth(); i++)
         {
-            System.out.print(values[i]+"\n");
+            System.out.print(i+":"+values[i]+"\n");
             if (!game.canMakeMove(i)){
                 continue;
             }
-            game.makeMove(i);
-            if (game.isGameOver()){
-                bestmove = i;
-                break;
-            }
-            game.unMakeMove();
+
 
             if(values[i] > bestscore && game.canMakeMove(i)) {
                 bestscore = values[i];
                 bestmove = i;}
+            
+            game.makeMove(i);
+            if (game.isGameOver()){
+                System.out.print("rest of loop not finished cause game ends here");
+                bestmove = i;
+                bestscore = values[i];
+            }
+            game.unMakeMove();
 
         }
-
+        
         System.out.print("bestmove:"+bestmove);
        
         
@@ -122,16 +126,16 @@ public class NewAI extends AIModule
             return 0; }
         
         //check if game ending move
-        if(isWinningMove(game))
+       /* if(isWinningMove(game))
         {
             return -999999;
-            /*
+            
             if(player == 1){
                 return 999999;}
             else {
-                return -999999; }*/
+                return -999999; }
             
-        }
+        } */
         
         
         //check if max depth
@@ -141,13 +145,18 @@ public class NewAI extends AIModule
         //MAX
         if(player == 1)
         {
-            score = -99999;
+            score = -8000;
             for(int i = 0; i < 7; ++i)
             {
                 if (game.canMakeMove(i))
                 {
                     game.makeMove(i);
-
+                    
+                    /*if (game.isGameOver()) {
+                        System.out.print("game ended at depth "+ depth);
+                        return 99998;
+                    }*/
+                    
                     oppscore = minimax(game, player*-1, depth + 1);
                     
                     //System.out.print(i+"-"+oppscore+" ");
@@ -161,17 +170,23 @@ public class NewAI extends AIModule
            // System.out.print("\nNEW LEVEL\n");
 
         }
+
         
         //MIN
         else
         {
-            score = 99999;
-            System.out.print("\n");
+            score = 8000;
             for(int i = 0; i < 7; ++i)
             {
                 if (game.canMakeMove(i))
                 {
                     game.makeMove(i);
+                    
+                    /*if (game.isGameOver()) {
+                        System.out.print("HERE");
+                        return -99999;
+                    } */
+                    
                     oppscore = minimax(game, player*-1, depth + 1);
                     if(oppscore < score) {
                         score = oppscore;
@@ -180,8 +195,9 @@ public class NewAI extends AIModule
                 }
             }
         }
-       // System.out.print("RETURNED:"+scorepos+"-"+score+"\n\n");
         return score;
+       // System.out.print("RETURNED:"+scorepos+"-"+score+"\n\n");
+        
     }
     
     
@@ -425,6 +441,11 @@ public class NewAI extends AIModule
             threat = 0;
             oppothreat = 1;
         }
+        
+        if (game.isGameOver()) {
+            return 99999;
+        }
+        
         //if player = 1 then favor odd threats
         //if player = 2 then favor even threats
         //determined by row % 2
@@ -663,21 +684,25 @@ public class NewAI extends AIModule
         
         for (int i = 0; i < 7; i++) {
             if (game.getHeightAt(i) > 3) {
-                if ( (game.getAt(i,game.getHeightAt(i) - 1) == currentPlayer) && (game.getAt(i,game.getHeightAt(i) - 2) == currentPlayer) && (game.getAt(i,game.getHeightAt(i) - 3) == currentPlayer))
-                    return true;
+                if ( (game.getAt(i,game.getHeightAt(i) - 1) == currentPlayer) && (game.getAt(i,game.getHeightAt(i) - 2) == currentPlayer) && (game.getAt(i,game.getHeightAt(i) - 3) == currentPlayer)) {
+                    System.out.print("ENDED WITH VERT");
+                    return true;}
                 //diag up-right
                 if ( i >= 3 )
                     if ( (game.getAt(i - 1, game.getHeightAt(i) - 1) == currentPlayer) && (game.getAt(i - 2, game.getHeightAt(i) - 2) == currentPlayer) && (game.getAt(i - 3, game.getHeightAt(i) - 3) == currentPlayer) )
+                        System.out.print("ENDED WITH UPRIGHT");
                         return true;
             } }
         // check horizontal
         
         for (int i = 0; i <= game.getWidth() - 3; i++) {
-            if ( (game.getAt(i + 1, game.getHeightAt(i)) == currentPlayer) && (game.getAt(i + 2, game.getHeightAt(i)) == currentPlayer) && (game.getAt(i + 3, game.getHeightAt(i)) == currentPlayer))
-                return true;
+            if ( (game.getAt(i + 1, game.getHeightAt(i)) == currentPlayer) && (game.getAt(i + 2, game.getHeightAt(i)) == currentPlayer) && (game.getAt(i + 3, game.getHeightAt(i)) == currentPlayer)){
+                System.out.print("ENDED WITH HORIZ");
+                return true; }
             //check up-left
             if (game.getHeightAt(i) >= 3)
                 if ( (game.getAt(i + 1, game.getHeightAt(i) - 1) == currentPlayer) && (game.getAt(i + 2, game.getHeightAt(i) - 2) == currentPlayer) && (game.getAt(i + 3, game.getHeightAt(i) - 3) == currentPlayer) )
+                    System.out.print("ENDED WITH UPLEFT");
                     return true;
             
         }
@@ -685,22 +710,26 @@ public class NewAI extends AIModule
         
         for (int i = 0; i < 7; i++) {
             if (game.getHeightAt(i) > 3) {
-                if ( (game.getAt(i,game.getHeightAt(i) - 1) == oppo) && (game.getAt(i,game.getHeightAt(i) - 2) == oppo) && (game.getAt(i,game.getHeightAt(i)) - 3 == oppo))
-                    return true;
+                if ( (game.getAt(i,game.getHeightAt(i) - 1) == oppo) && (game.getAt(i,game.getHeightAt(i) - 2) == oppo) && (game.getAt(i,game.getHeightAt(i)) - 3 == oppo)) {
+                    System.out.print("ENDED WITH OPPO VERT");
+                    return true; }
                 //diag up-right
                 if ( i >= 3 )
-                    if ( (game.getAt(i - 1, game.getHeightAt(i) - 1) == oppo) && (game.getAt(i - 2, game.getHeightAt(i) - 2) == oppo) && (game.getAt(i - 3, game.getHeightAt(i) - 3) == oppo) )
-                        return true;
+                    if ( (game.getAt(i - 1, game.getHeightAt(i) - 1) == oppo) && (game.getAt(i - 2, game.getHeightAt(i) - 2) == oppo) && (game.getAt(i - 3, game.getHeightAt(i) - 3) == oppo) ) {
+                        System.out.print("ENDED WITH OPPO UPRIGHT");
+                        return true; }
             } }
         // check horizontal
         
         for (int i = 0; i <= game.getWidth() - 3; i++) {
-            if ( (game.getAt(i + 1, game.getHeightAt(i)) == oppo) && (game.getAt(i + 2, game.getHeightAt(i)) == oppo) && (game.getAt(i + 3, game.getHeightAt(i)) == oppo))
-                return true;
+            if ( (game.getAt(i + 1, game.getHeightAt(i)) == oppo) && (game.getAt(i + 2, game.getHeightAt(i)) == oppo) && (game.getAt(i + 3, game.getHeightAt(i)) == oppo)) {
+                System.out.print("ENDED WITH OPPO HORIZ");
+                return true; }
             //check up-left
             if (game.getHeightAt(i) >= 3)
-                if ( (game.getAt(i + 1, game.getHeightAt(i) - 1) == oppo) && (game.getAt(i + 2, game.getHeightAt(i) - 2) == oppo) && (game.getAt(i + 3, game.getHeightAt(i) - 3) == oppo) )
-                    return true;
+                if ( (game.getAt(i + 1, game.getHeightAt(i) - 1) == oppo) && (game.getAt(i + 2, game.getHeightAt(i) - 2) == oppo) && (game.getAt(i + 3, game.getHeightAt(i) - 3) == oppo) ) {
+                    System.out.print("ENDED WITH OPPO UPLEFT");
+                    return true; }
             
         }
         
