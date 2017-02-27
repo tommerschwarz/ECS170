@@ -39,7 +39,6 @@ public class NewAI extends AIModule
         {
             System.out.print(values[i]+"\n");
             if (!game.canMakeMove(i)){
-                System.out.print("HEHREHRHEHRE");
                 continue;
             }
             game.makeMove(i);
@@ -125,12 +124,15 @@ public class NewAI extends AIModule
         //check if game ending move
         if(isWinningMove(game))
         {
+            return -999999;
+            /*
             if(player == 1){
-                return -999999;}
+                return 999999;}
             else {
-                return 999999; }
+                return -999999; }*/
             
         }
+        
         
         //check if max depth
         if(depth == 3) {
@@ -632,7 +634,7 @@ public class NewAI extends AIModule
             }
         }
         
-        for(int i = 0; i < game.getWidth(); i++)
+        for (int i = 0; i < game.getWidth(); i++)
         {
             for(int j = 0; j < game.getHeight(); j++)
             {
@@ -644,6 +646,7 @@ public class NewAI extends AIModule
     }
     
     
+
     
     boolean isWinningMove (final GameStateModule game) {
         
@@ -660,7 +663,7 @@ public class NewAI extends AIModule
         
         for (int i = 0; i < 7; i++) {
             if (game.getHeightAt(i) > 3) {
-                if ( (game.getAt(i,game.getHeightAt(i) - 1) == currentPlayer) && (game.getAt(i,game.getHeightAt(i) - 2) == currentPlayer) && (game.getAt(i,game.getHeightAt(i)) - 3 == currentPlayer))
+                if ( (game.getAt(i,game.getHeightAt(i) - 1) == currentPlayer) && (game.getAt(i,game.getHeightAt(i) - 2) == currentPlayer) && (game.getAt(i,game.getHeightAt(i) - 3) == currentPlayer))
                     return true;
                 //diag up-right
                 if ( i >= 3 )
