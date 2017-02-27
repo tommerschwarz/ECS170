@@ -38,6 +38,12 @@ public class NewAI extends AIModule
         for(int i = 0; i < game.getWidth(); i++)
         {
             System.out.print(values[i]+"\n");
+            game.makeMove(i);
+            if (game.isGameOver()){
+                bestmove = i;
+                break;
+            }
+            game.unMakeMove();
             if(values[i] > bestscore && game.canMakeMove(i)) {
                 bestscore = values[i];
                 bestmove = i;}
@@ -132,6 +138,7 @@ public class NewAI extends AIModule
                 if (game.canMakeMove(i))
                 {
                     game.makeMove(i);
+
                     oppscore = minimax(game, player*-1, depth + 1);
                     
                     //System.out.print(i+"-"+oppscore+" ");
@@ -167,6 +174,8 @@ public class NewAI extends AIModule
         return score;
     }
     
+    
+    /*
     public int heuristic (final GameStateModule game){
         int result = 0;
         int oppo;
@@ -191,12 +200,10 @@ public class NewAI extends AIModule
         
 
         for (int i = 0; i < 7; ++i){
-           /* game.makeMove(i);
-            if (isWinningMove(game)){
+            /*if (isWinningMove(game)){
                 return 999;
-            }
-            game.unMakeMove(); */
-            if (!game.canMakeMove(i)){
+            } */
+         /*   if (!game.canMakeMove(i)){
                 return -999;
             }
             if (threats[i][game.getHeightAt(i)] > result) {
@@ -206,82 +213,191 @@ public class NewAI extends AIModule
         //System.out.print("RESULT:"+result+"\n");
         
         return result;
-
-        // check horizontals
-        /*for (int i = 0; i <= 3; ++i){
-            for (int j = 0; j < 7; ++j) {
-                int[] horiz = new int[4];
-                
-                horiz[0] = game.getAt(i,j);
-                horiz[1] = game.getAt(i+1,j);
-                horiz[2] = game.getAt(i+2,j);
-                horiz[3] = game.getAt(i+3,j);
-
-
-                if ((game.getAt(i,j) == currentPlayer || game.getAt(i,j) == 0) && (game.getAt(i + 1,j) == currentPlayer || game.getAt(i + 1,j) == 0)  && (game.getAt(i + 2,j) == currentPlayer || game.getAt(i + 2,j) == 0)  && (game.getAt(i + 3,j) == currentPlayer || game.getAt(i + 3,j) == 0)) {
-                    int count = 0;
-                    int pc = 0;
-                    while (count < 4){
-                        if (horiz[count] == currentPlayer)
-                            pc++;
-                        count++; }
-                    
-                    result = result + pc*5 +1; }
-
-                
-                
-                if ((game.getAt(i,j) == oppo || game.getAt(i,j) == 0) && (game.getAt(i + 1,j) == oppo || game.getAt(i + 1,j) == 0)  && (game.getAt(i + 2,j) == oppo || game.getAt(i + 2,j) == 0)  && (game.getAt(i + 3,j) == oppo || game.getAt(i + 3,j) == 0)) {
-                    
-                    int count = 0;
-                    int pc = 0;
-                    while (count < 4) {
-                        if (horiz[count] == oppo)
-                            pc++;
-                        count++; }
-                    result = result - (pc*5 +1); }
-                
- 
-                
-            }
-            }
-        
-        
-        // check verticals
-        for (int i = 0; i < 7; ++i){
-            for (int j = 0; j <= 3; ++j) {
-                int[] vert = new int[4];
-                vert[0] = game.getAt(i,j);
-                vert[1] = game.getAt(i,j+1);
-                vert[2] = game.getAt(i,j+2);
-                vert[3] = game.getAt(i,j+3);
-                
-                if ((game.getAt(i,j) == currentPlayer || game.getAt(i,j) == 0) && (game.getAt(i,j+1) == currentPlayer || game.getAt(i,j+1) == 0)  && (game.getAt(i,j+2) == currentPlayer || game.getAt(i,j+2) == 0)  && (game.getAt(i,j+3) == currentPlayer || game.getAt(i,j+3) == 0)) {
-                    int count = 0;
-                    int pc = 0;
-                    while (count < 4) {
-                        if (vert[count] == currentPlayer)
-                            pc++;
-                        count++; }
-                    
-                    result = result + (pc*5 +1);
-                }
-
-                if ((game.getAt(i,j) == oppo || game.getAt(i,j) == 0) && (game.getAt(i,j+1) == oppo || game.getAt(i,j+1) == 0)  && (game.getAt(i,j+2) == oppo || game.getAt(i,j+2) == 0)  && (game.getAt(i,j+3) == oppo || game.getAt(i,j+3) == 0)) {
-                    int count = 0;
-                    int pc = 0;
-                    while (count < 4) {
-                        if (vert[count] == oppo)
-                            pc++;
-                        count++; }
-                    
-                    result = result - (pc*5 +1); }
-            }
-        }*/
-        
-        //return result;
                          }
+    boolean oppoWin (final GameStateModule game) {
+        
+        for (int i = 0; i < 7; i++) {
+            if (game.getHeightAt(i) > 3) {
+                if ( (game.getAt(i,game.getHeightAt(i) - 1) == oppo) && (game.getAt(i,game.getHeightAt(i) - 2) == oppo) && (game.getAt(i,game.getHeightAt(i)) - 3 == oppo))
+                    return true;
+                //diag up-right
+                if ( i >= 3 )
+                    if ( (game.getAt(i - 1, game.getHeightAt(i) - 1) == oppo) && (game.getAt(i - 2, game.getHeightAt(i) - 2) == oppo) && (game.getAt(i - 3, game.getHeightAt(i) - 3) == oppo) )
+                        return true;
+            } }
+        // check horizontal
+        
+        for (int i = 0; i <= game.getWidth() - 3; i++) {
+            if ( (game.getAt(i + 1, game.getHeightAt(i)) == oppo) && (game.getAt(i + 2, game.getHeightAt(i)) == oppo) && (game.getAt(i + 3, game.getHeightAt(i)) == oppo))
+                return true;
+            //check up-left
+            if (game.getHeightAt(i) >= 3)
+                if ( (game.getAt(i + 1, game.getHeightAt(i) - 1) == oppo) && (game.getAt(i + 2, game.getHeightAt(i) - 2) == oppo) && (game.getAt(i + 3, game.getHeightAt(i) - 3) == oppo) )
+                    return true;
+            
+        }
+        
+        return false;
+        
+    } */
+    
+    
+    ////////
+    
+    
+    public int heuristic (final GameStateModule game)
+    {
+        int player = game.getActivePlayer();
+        int oppo;
+        if (player == 1){
+            oppo = 2;
+        }
+        else {
+            oppo = 1;
+        }
+        
+        int threat;
+        if(player == 1)
+            threat = 1;
+        else
+            threat = 0;
+        //if player = 1 then favor odd threats
+        //if player = 2 then favor even threats
+        //determined by row % 2
+        
+        int score = 0;
+        
+        //initialize threats value table
+        int [][]threats = new int[7][6];
+        for(int i = 0; i < game.getWidth(); i++)
+        {
+            for(int j = 0; j < game.getHeight(); j++)
+            {
+                threats[i][j] = 0;
+            }
+        }
+        
+        //check horizontals
+        for(int i = 0; i < game.getWidth() - 3; i++)
+        {
+            for(int j = 0; j < game.getHeight(); j++)
+            {
+                //if blocked, continue
+                if(game.getAt(i,j)==oppo || game.getAt(i+1,j)==oppo || game.getAt(i+2,j)==oppo || game.getAt(i+3,j)==oppo)
+                    continue;
+                else
+                {
+                    int count = 0;
+                    //checks how many coins are in this block
+                    for(int q = 0; q < 4; q++)
+                    {
+                        if(game.getAt(i+q,j)==player) count++;
+                    }
+                    //add to position's value
+                    for(int q = 0; q < 4; q++)
+                    {
+                        //if empty position, add to values array; else do nothing
+                        if(game.getAt(i+q,j)==0)
+                            threats[i+q][j] += 5^(count);// + dosomethingforthreat);
+                            }
+                }
+            }
+        }
+        
+        //check for right incr diagonals
+        for(int i = 0; i < game.getWidth() - 3; i++)
+        {
+            for(int j = 0; j < game.getHeight()-3; j++)
+            {
+                //if blocked, continue
+                if(game.getAt(i,j)==oppo || game.getAt(i+1,j+1)==oppo || game.getAt(i+2,j+2)==oppo || game.getAt(i+3,j+3)==oppo)
+                    continue;
+                else
+                {
+                    int count = 0;
+                    //checks how many coins are in this block
+                    for(int q = 0; q < 4; q++)
+                    {
+                        if(game.getAt(i+q,j+q)==player) count++;
+                    }
+                    //add to position's value
+                    for(int q = 0; q < 4; q++)
+                    {
+                        //if empty position, add to values array; else do nothing
+                        if(game.getAt(i+q,j+q)==0)
+                            threats[i+q][j+q] += 5^(count);// + dosomethingforthreat);
+                    }
+                }
+            }
+        }
+        
+        //check for left diagonals
+        for(int i = 3; i < game.getWidth(); i++)
+        {
+            for(int j = 0; j < game.getHeight()-3; j++)
+            {
+                //if blocked, continue
+                if(game.getAt(i,j)==oppo || game.getAt(i-1,j+1)==oppo || game.getAt(i-2,j+2)==oppo || game.getAt(i-3,j+3)==oppo)
+                    continue;
+                else
+                {
+                    int count = 0;
+                    //checks how many coins are in this block
+                    for(int q = 0; q < 4; q++)
+                    {
+                        if(game.getAt(i-q,j+q)==player) count++;
+                    }
+                    //add to position's value
+                    for(int q = 0; q < 4; q++)
+                    {
+                        //if empty position, add to values array; else do nothing
+                        if(game.getAt(i-q,j+q)==0)
+                            threats[i-q][j+q] += 5^(count);// + dosomethingforthreat);
+                    }
+                }
+            }
+        }
+        
+        //check for verticals
+        for(int i = 0; i < game.getWidth(); i++)
+        {
+            for(int j = 3; j < game.getHeight(); j++)
+            {
+                //if blocked, continue
+                if(game.getAt(i,j)==oppo || game.getAt(i,j-1)==oppo || game.getAt(i,j-2)==oppo || game.getAt(i,j-3)==oppo)
+                    continue;
+                else
+                {
+                    int count = 0;
+                    //checks how many coins are in this block
+                    for(int q = 0; q < 4; q++)
+                    {
+                        if(game.getAt(i,j-q)==player) count++;
+                    }
+                    //if empty position, add to values array; else do nothing
+                    if(game.getAt(i,j)==0) 
+                        threats[i][j] += 5^count;
+                }
+            }
+        }
+        
+        for(int i = 0; i < game.getWidth(); i++)
+        {
+            for(int j = 0; j < game.getHeight(); j++)
+            {
+                score += threats[i][j];
+            }
+        }
 
-
+        return -score;
+    }
+    
+    
+    
+////////////
+    
+    
+    
     boolean isWinningMove (final GameStateModule game) {
         
         int currentPlayer = game.getActivePlayer();
