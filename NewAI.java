@@ -34,11 +34,16 @@ public class NewAI extends AIModule
         }
         System.out.print("\n\nNEW TURN:\n");
         int bestmove = -1;
-        int bestscore = -999;
+        int bestscore = -10000;
         for(int i = 0; i < game.getWidth(); i++)
         {
-            if(values[i] >= bestscore) bestmove = i;
+            System.out.print(values[i]+"\n");
+            if(values[i] > bestscore && game.canMakeMove(i)) {
+                bestscore = values[i];
+                bestmove = i;}
         }
+        System.out.print("bestmove:"+bestmove);
+       
         
         chosenMove = bestmove;
     }
@@ -128,14 +133,16 @@ public class NewAI extends AIModule
                 {
                     game.makeMove(i);
                     oppscore = minimax(game, player*-1, depth + 1);
+                    
                     //System.out.print(i+"-"+oppscore+" ");
+                    
                     if(oppscore > score) {
                         score = oppscore;
                         scorepos = i;}
                     game.unMakeMove();
                 }
             }
-            //System.out.print("\nNEW LEVEL\n");
+           // System.out.print("\nNEW LEVEL\n");
 
         }
         
@@ -156,21 +163,52 @@ public class NewAI extends AIModule
                 }
             }
         }
-        //System.out.print("RETURNED:"+scorepos+"-"+score+"\n\n");
+       // System.out.print("RETURNED:"+scorepos+"-"+score+"\n\n");
         return score;
     }
     
     public int heuristic (final GameStateModule game){
         int result = 0;
         int oppo;
+        int [][] threats  = {{2,2,2,3,3,3},{3,4,4,6,5,4},{4,6,8,9,7,5},{6,8,10,11,9,7},{4,6,8,9,7,5},{3,4,4,6,5,4},{2,2,2,3,3,3}};
+        
         int currentPlayer = game.getActivePlayer();
         if (currentPlayer == 1){
             oppo = 2; }
         else {
             oppo = 1; }
+        
+       for (int i = 0; i < 7; ++i) {
+            for (int j = 0; j < 6; ++j){
+                if (game.getAt(i,j) == currentPlayer){
+                    result = result + threats[i][j];
+                }
+                if (game.getAt(i,j) == oppo){
+                    result = result - threats[i][j];
+                }
+            }
+        }
+        
+
+        for (int i = 0; i < 7; ++i){
+           /* game.makeMove(i);
+            if (isWinningMove(game)){
+                return 999;
+            }
+            game.unMakeMove(); */
+            if (!game.canMakeMove(i)){
+                return -999;
+            }
+            if (threats[i][game.getHeightAt(i)] > result) {
+                result = result + threats[i][game.getHeightAt(i)];
+            }
+        }
+        //System.out.print("RESULT:"+result+"\n");
+        
+        return result;
 
         // check horizontals
-        for (int i = 0; i <= 3; ++i){
+        /*for (int i = 0; i <= 3; ++i){
             for (int j = 0; j < 7; ++j) {
                 int[] horiz = new int[4];
                 
@@ -200,7 +238,7 @@ public class NewAI extends AIModule
                         if (horiz[count] == oppo)
                             pc++;
                         count++; }
-                    result = result - (pc*1000 +1); }
+                    result = result - (pc*5 +1); }
                 
  
                 
@@ -236,27 +274,36 @@ public class NewAI extends AIModule
                             pc++;
                         count++; }
                     
-                    result = result - (pc*10 +1); }
+                    result = result - (pc*5 +1); }
             }
-        }
+        }*/
         
-        return result;
+        //return result;
                          }
-    
+
+
     boolean isWinningMove (final GameStateModule game) {
         
         int currentPlayer = game.getActivePlayer();
+        int oppo;
+        if (currentPlayer == 1){
+            oppo = 2;
+        }
+        else {
+            oppo = 1;
+        }
         
         // check vertical
         
-        for (int i = 0; i <= game.getHeight() - 3; i++) {
-            if ( (game.getAt(i,game.getHeightAt(i)) - 1 == currentPlayer) && (game.getAt(i,game.getHeightAt(i)) - 2 == currentPlayer) && (game.getAt(i,game.getHeightAt(i)) - 3 == currentPlayer))
-                return true;
-            //diag up-right
-            if ( i >= 3 )
-                if ( (game.getAt(i - 1, game.getHeightAt(i) - 1) == currentPlayer) && (game.getAt(i - 2, game.getHeightAt(i) - 2) == currentPlayer) && (game.getAt(i - 3, game.getHeightAt(i) - 3) == currentPlayer) )
+        for (int i = 0; i < 7; i++) {
+            if (game.getHeightAt(i) > 3) {
+                if ( (game.getAt(i,game.getHeightAt(i) - 1) == currentPlayer) && (game.getAt(i,game.getHeightAt(i) - 2) == currentPlayer) && (game.getAt(i,game.getHeightAt(i)) - 3 == currentPlayer))
                     return true;
-        }
+                //diag up-right
+                if ( i >= 3 )
+                    if ( (game.getAt(i - 1, game.getHeightAt(i) - 1) == currentPlayer) && (game.getAt(i - 2, game.getHeightAt(i) - 2) == currentPlayer) && (game.getAt(i - 3, game.getHeightAt(i) - 3) == currentPlayer) )
+                        return true;
+            } }
         // check horizontal
         
         for (int i = 0; i <= game.getWidth() - 3; i++) {
@@ -268,9 +315,31 @@ public class NewAI extends AIModule
                     return true;
             
         }
+        // CHECK FOR OPPONENTS WINNING MOVE
+        
+        for (int i = 0; i < 7; i++) {
+            if (game.getHeightAt(i) > 3) {
+                if ( (game.getAt(i,game.getHeightAt(i) - 1) == oppo) && (game.getAt(i,game.getHeightAt(i) - 2) == oppo) && (game.getAt(i,game.getHeightAt(i)) - 3 == oppo))
+                    return true;
+                //diag up-right
+                if ( i >= 3 )
+                    if ( (game.getAt(i - 1, game.getHeightAt(i) - 1) == oppo) && (game.getAt(i - 2, game.getHeightAt(i) - 2) == oppo) && (game.getAt(i - 3, game.getHeightAt(i) - 3) == oppo) )
+                        return true;
+            } }
+        // check horizontal
+        
+        for (int i = 0; i <= game.getWidth() - 3; i++) {
+            if ( (game.getAt(i + 1, game.getHeightAt(i)) == oppo) && (game.getAt(i + 2, game.getHeightAt(i)) == oppo) && (game.getAt(i + 3, game.getHeightAt(i)) == oppo))
+                return true;
+            //check up-left
+            if (game.getHeightAt(i) >= 3)
+                if ( (game.getAt(i + 1, game.getHeightAt(i) - 1) == oppo) && (game.getAt(i + 2, game.getHeightAt(i) - 2) == oppo) && (game.getAt(i + 3, game.getHeightAt(i) - 3) == oppo) )
+                    return true;
+            
+        }
+        
         return false;
     }
 
-    
-    
 }
+
