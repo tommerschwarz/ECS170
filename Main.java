@@ -31,15 +31,15 @@ public class Main
         
         int numTrain = 100;
         for (int i = 0; i < 100; ++i){ // for each training image
-            for (int j = 0; j < w1.length(); ++j)
+            for (int j = 0; j < w1.length; ++j)
                 z1 [j % 3] += w1[j]* (VALUE IN X1);
                         // set a1 to xk, each value in a1 is a sum of all x values, multiplied by the weights leading to that hidden node
                 
             for (int h = 0; h < z1.length; ++h){ // compute a(l) for all layers l
-                a1 [h] = sigmoid(z1[h]);
+                a1 [h] = sigmoid(z1[h]); //multiply by weights and add up
             }
             
-            for (int m = 0; m < w2.length(); ++m)
+            for (int m = 0; m < w2.length; ++m)
                 z2 [m % 2] += w2[j]* a1[(m*3)/3]; // CHECK THIS
             
             for (int k = 0; k < z2.length; ++k){
