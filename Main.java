@@ -73,11 +73,7 @@ public class Main
             }
             
             
-            
-            for (int j = 0; j < input.length; j++) {
-                z1[j%3] += w1[j % 3][j/3];
-            }
-            
+            //compute z1
             for(int j = 0; j < w1.length; j++){
                 for(int x = 0; x < w1[0].length - 1; x++){
                     z1[j] += w1[j][x]  * input[x];
@@ -85,11 +81,13 @@ public class Main
                 z1[j] += w1[j][15360]; //add a0 bias
             }
             
-            for (int j = 0; j < z1.length - 1; j++){ // compute a(l) for all layers l
+            // compute a(l) for all layers
+            for (int j = 0; j < z1.length - 1; j++){
                 a1[j] = sigmoid(z1[j]); // apply sigmoid function to z1
             }
             a1[3] = .5; // initialize a1 bias constant in hidden layer ???CHECK????
             
+            //compute z2
             for(int j = 0; j < w2.length; j++){
                 for(int x = 0; x < w2[0].length; x++){
                     z2[j] += w2[j][x] * a1[x];  // uses weights in second layer to produce z2
