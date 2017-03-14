@@ -81,8 +81,11 @@ public class Main
         
         double learnRate = .05;
         
+        
 
         int[] input = new int[128*120];
+        double[] normInput = new double[128*120];
+        int max, min;
         
     
         for (int i = 1; i < files.length-1; ++i){ // for each training image
@@ -90,10 +93,20 @@ public class Main
             //read in image array
             //FileReader fr = new FileReader("Male/"+maleFiles[i].getName());
             FileReader fr = new FileReader(dir+files[i].getName());
-            //BufferedReader br = new BufferedReader(fr);
             Scanner s = new Scanner(fr);
+            max = 0;
+            min = 1000;
             for (int j = 0; j < input.length; j++){
                 input[j] = s.nextInt();
+                if(input[j] < min)
+                    min = input[j];
+                if(input[j] > max)
+                    max = input[j];
+            }
+            
+            //normalize data
+            for(int j =  0; j < input.length; j++){
+                normInput[j] = (input[j] - min)/(max - min);
             }
             
     
@@ -101,7 +114,7 @@ public class Main
             System.out.println("Computing z1");
             for(int j = 0; j < w1.length; j++){
                 for(int x = 0; x < w1[0].length - 1; x++){
-                    z1[j] += w1[j][x]  * input[x];
+                    z1[j] += w1[j][x]  * normInput[x];
                 }
                 z1[j] += w1[j][15360]; //add a0 bias
                 System.out.print(z1[j]+" ");
@@ -181,21 +194,36 @@ public class Main
 
         
         int[] input = new int[128*120];
+        double[] normInput = new double[128*120];
+        int max, min;
         
         
         for (int i = 1; i < files.length-1; ++i){ // for each training image
+            System.out.println("new image\n");
             //read in image array
+            //FileReader fr = new FileReader("Male/"+maleFiles[i].getName());
             FileReader fr = new FileReader(dir+files[i].getName());
             Scanner s = new Scanner(fr);
+            max = 0;
+            min = 1000;
             for (int j = 0; j < input.length; j++){
                 input[j] = s.nextInt();
+                if(input[j] < min)
+                    min = input[j];
+                if(input[j] > max)
+                    max = input[j];
+            }
+            
+            //normalize data
+            for(int j =  0; j < input.length; j++){
+                normInput[j] = (input[j] - min)/(max - min);
             }
             
             
             //compute z1
             for(int j = 0; j < w1.length; j++){
                 for(int x = 0; x < w1[0].length - 1; x++){
-                    z1[j] += w1[j][x]  * input[x];
+                    z1[j] += w1[j][x]  * normInput[x];
                 }
                 z1[j] += w1[j][15360]; //add a0 bias
             }
