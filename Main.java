@@ -1,6 +1,9 @@
 import java.util.*;
 import java.io.*;
 
+
+
+
 public class Main
 {
     public static double [][] w1;
@@ -24,7 +27,8 @@ public class Main
         int testOutput[][] = new int [testFiles.length][2];
         
         //we need a way to combine male and female folders and shuffle training data
-        
+    
+
         //initialize outputs
         for(int i = 0; i < maleFiles.length; i++){
             maleOutput[i][0] = 1;
@@ -65,6 +69,7 @@ public class Main
         test("Test/", testFiles);
         
     }
+    
     
 
     public static void bp(String dir, File[] files, int[][] output) throws IOException { // backpropagation function
@@ -163,7 +168,7 @@ public class Main
             for(int j = 0; j < w2.length; j++){ // update weights for w2
                 for(int x = 0; x < w2[0].length; x++){
                     w2[j][x] -= learnRate * (a2[j] * l2[j]);
-                    System.out.println(w2[j][x]+" ");
+                    System.out.println("updating by "+learnRate * (a2[j] * l2[j]));
                 }
             }
             
@@ -201,7 +206,6 @@ public class Main
         for (int i = 1; i < files.length-1; ++i){ // for each training image
             System.out.println("new image\n");
             //read in image array
-            //FileReader fr = new FileReader("Male/"+maleFiles[i].getName());
             FileReader fr = new FileReader(dir+files[i].getName());
             Scanner s = new Scanner(fr);
             max = 0;
