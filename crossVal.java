@@ -143,13 +143,11 @@ public class crossVal
         for(int i = 0; i < w1.length; i++){
             for(int j = 0; j < w1[0].length; j++){
                 w1[i][j] = 10;
-                //w1[i][j] = Math.random();
             }
         }
         for(int i = 0; i < w2.length; i++){
             for(int j = 0; j < w2[0].length; j++){
                 w2[i][j] = 10;
-                //w2[i][j] = Math.random();
             }
         }
         
@@ -175,13 +173,11 @@ public class crossVal
         for(int i = 0; i < w1.length; i++){
             for(int j = 0; j < w1[0].length; j++){
                 w1[i][j] = 10;
-                //w1[i][j] = Math.random();
             }
         }
         for(int i = 0; i < w2.length; i++){
             for(int j = 0; j < w2[0].length; j++){
                 w2[i][j] = 10;
-                //w2[i][j] = Math.random();
             }
         }
         
@@ -197,13 +193,11 @@ public class crossVal
         for(int i = 0; i < w1.length; i++){
             for(int j = 0; j < w1[0].length; j++){
                 w1[i][j] = 10;
-                //w1[i][j] = Math.random();
             }
         }
         for(int i = 0; i < w2.length; i++){
             for(int j = 0; j < w2[0].length; j++){
                 w2[i][j] = 10;
-                //w2[i][j] = Math.random();
             }
         }
         
@@ -219,13 +213,11 @@ public class crossVal
         for(int i = 0; i < w1.length; i++){
             for(int j = 0; j < w1[0].length; j++){
                 w1[i][j] = 10;
-                //w1[i][j] = Math.random();
             }
         }
         for(int i = 0; i < w2.length; i++){
             for(int j = 0; j < w2[0].length; j++){
                 w2[i][j] = 10;
-                //w2[i][j] = Math.random();
             }
         }
         
@@ -241,13 +233,11 @@ public class crossVal
         for(int i = 0; i < w1.length; i++){
             for(int j = 0; j < w1[0].length; j++){
                 w1[i][j] = 10;
-                //w1[i][j] = Math.random();
             }
         }
         for(int i = 0; i < w2.length; i++){
             for(int j = 0; j < w2[0].length; j++){
                 w2[i][j] = 10;
-                //w2[i][j] = Math.random();
             }
         }
         
@@ -259,6 +249,7 @@ public class crossVal
         test(g5);
         
         
+
     }
     
     public static void shuffleArray(File[] array) // shuffles arrays of Files
@@ -314,6 +305,7 @@ public class crossVal
             //System.out.println("new image\n");
 
             FileReader fr = new FileReader(dir+files[i].getName());
+
             Scanner s = new Scanner(fr);
             
             if (!files[i].getName().endsWith(".txt")) continue;
@@ -332,12 +324,14 @@ public class crossVal
             //normalize data
             for(int j =  0; j < input.length; j++){
                 normInput[j] = (input[j] - min)/(max - min);
+
             }
     
             //compute z1
             //System.out.println("Computing z1");
             for(int j = 0; j < w1.length; j++){
                 for(int x = 0; x < w1[0].length - 1; x++){
+
                     z1[j] += w1[j][x]  * normInput[x];
                 }
                 z1[j] += w1[j][15360]; //add a0 bias
@@ -351,7 +345,7 @@ public class crossVal
                 a1[j] = sigmoid(z1[j]); // apply sigmoid function to z1
                 //System.out.print(a1[j]+" ");
             }
-            a1[3] = 10; // initialize a1 bias constant in hidden layer ???CHECK????
+            a1[3] = 10; // initialize a1 bias constant in hidden layer
             
             
             //compute z2
@@ -443,6 +437,7 @@ public class crossVal
             }
             FileReader fr = new FileReader(dir+files[i].getName());
             Scanner s = new Scanner(fr);
+            
             if (!files[i].getName().endsWith(".txt")) continue;
             max = 0;
             min = 1000;
