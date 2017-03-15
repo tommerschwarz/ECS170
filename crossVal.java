@@ -26,16 +26,37 @@ public class crossVal
     /// Prints the commandline instructions.
     public static void main(String[] args) throws IOException
     {
+        int train = 0;
+        int test = 0;
+        String dir1 = null;
+        String dir2 = null;
+        String testDir = null;
+        
+        for(int i = 0; i < args.length; i++){
+            if(args[i].equals("-train")){
+                train = 1;
+                dir1 = args[i+1];
+                dir2 = args[i+2];
+                System.out.println("training directories: "+dir1+" "+dir2);
+            }
+            if(args[i].equals("-test")){
+                test = 1;
+                testDir = args[i+1];
+                System.out.println("testing directory: "+testDir);
+            }
+        }
+        
+        
         //load Male folder
-        final File maleFolder = new File ("Male/");
+        final File maleFolder = new File (dir1);
         File [] maleFiles = maleFolder.listFiles();
         int maleOutput[][] = new int [maleFiles.length][2];
         //load Female folder
-        final File femaleFolder = new File ("Female/");
+        final File femaleFolder = new File (dir2);
         File [] femaleFiles = femaleFolder.listFiles();
         int femaleOutput[][] = new int [femaleFiles.length][2];
         //load Test folder
-        final File testFolder = new File ("Test/");
+        final File testFolder = new File (testDir);
         File [] testFiles = testFolder.listFiles();
         int testOutput[][] = new int [testFiles.length][2];
         
@@ -59,9 +80,6 @@ public class crossVal
         List<Joint> g5 = new ArrayList<Joint>();
         int rand;
         
-        System.out.println("number of male files is: "+ maleFiles.length);
-        System.out.println("number of female files is: "+ femaleFiles.length);
-        
         for (int i = 0; i < total-5; ++i){
             Random random = ThreadLocalRandom.current();
             rand = random.nextInt(2);
@@ -71,8 +89,6 @@ public class crossVal
                 rand = 1;}
             if (fcount > femaleFiles.length - 2) {
                 rand = 0;}
-            
-            System.out.println("mcount is at "+mcount+" and fcount is at "+fcount);
             
             if (maleFiles[mcount].getName() == ".DS_Store"){
                 //mcount++;
@@ -151,102 +167,99 @@ public class crossVal
             }
         }
         
-        /*for (int b = 0; b < g1.size(); ++b){
-            System.out.println(((g1.get(b)).file).getName());
-            System.out.println(((g2.get(b)).file).getName());
-            System.out.println(((g3.get(b)).file).getName());
-            System.out.println(((g4.get(b)).file).getName());
-            System.out.println(((g5.get(b)).file).getName());
-        } */
-        
-        
-        
-        System.out.println("g1 is test");// g1 is test
-        train(g2);
-        train(g3);
-        train(g4);
-        train(g5);
-        test(g1);
-        
-        //w1 = new double[3][15361]; // initialize weights
-        //w2 = new double[2][4];
-        for(int i = 0; i < w1.length; i++){
-            for(int j = 0; j < w1[0].length; j++){
-                w1[i][j] = 10;
+        if(train == 1){
+            System.out.println("Performing 5-Fold Cross Validation");
+            System.out.println("g1 is test");// g1 is test
+            train(g2);
+            train(g3);
+            train(g4);
+            train(g5);
+            test(g1);
+            
+            //w1 = new double[3][15361]; // initialize weights
+            //w2 = new double[2][4];
+            for(int i = 0; i < w1.length; i++){
+                for(int j = 0; j < w1[0].length; j++){
+                    w1[i][j] = 10;
+                }
             }
-        }
-        for(int i = 0; i < w2.length; i++){
-            for(int j = 0; j < w2[0].length; j++){
-                w2[i][j] = 10;
+            for(int i = 0; i < w2.length; i++){
+                for(int j = 0; j < w2[0].length; j++){
+                    w2[i][j] = 10;
+                }
             }
+            
+            System.out.println("g2 is test");// g2 is test
+            train(g1);
+            train(g3);
+            train(g4);
+            train(g5);
+            test(g2);
+            
+            //w1 = new double[3][15361]; // initialize weights
+            //w2 = new double[2][4];
+            for(int i = 0; i < w1.length; i++){
+                for(int j = 0; j < w1[0].length; j++){
+                    w1[i][j] = 10;
+                }
+            }
+            for(int i = 0; i < w2.length; i++){
+                for(int j = 0; j < w2[0].length; j++){
+                    w2[i][j] = 10;
+                }
+            }
+            
+            System.out.println("g3 is test");// g3 is test
+            train(g1);
+            train(g2);
+            train(g4);
+            train(g5);
+            test(g3);
+            
+            //w1 = new double[3][15361]; // initialize weights
+            //w2 = new double[2][4];
+            for(int i = 0; i < w1.length; i++){
+                for(int j = 0; j < w1[0].length; j++){
+                    w1[i][j] = 10;
+                }
+            }
+            for(int i = 0; i < w2.length; i++){
+                for(int j = 0; j < w2[0].length; j++){
+                    w2[i][j] = 10;
+                }
+            }
+            
+            System.out.println("g4 is test");// g4 is test
+            train(g1);
+            train(g2);
+            train(g3);
+            train(g5);
+            test(g4);
+            
+            //w1 = new double[3][15361]; // initialize weights
+            //w2 = new double[2][4];
+            for(int i = 0; i < w1.length; i++){
+                for(int j = 0; j < w1[0].length; j++){
+                    w1[i][j] = 10;
+                }
+            }
+            for(int i = 0; i < w2.length; i++){
+                for(int j = 0; j < w2[0].length; j++){
+                    w2[i][j] = 10;
+                }
+            }
+            
+            System.out.println("g5 is test");// g5 is test
+            train(g1);
+            train(g2);
+            train(g3);
+            train(g4);
+            test(g5);
         }
         
-        System.out.println("g2 is test");// g2 is test
-        train(g1);
-        train(g3);
-        train(g4);
-        train(g5);
-        test(g2);
-        
-        //w1 = new double[3][15361]; // initialize weights
-        //w2 = new double[2][4];
-        for(int i = 0; i < w1.length; i++){
-            for(int j = 0; j < w1[0].length; j++){
-                w1[i][j] = 10;
-            }
+        if(test == 1){
+            test(testDir, testFiles);
         }
-        for(int i = 0; i < w2.length; i++){
-            for(int j = 0; j < w2[0].length; j++){
-                w2[i][j] = 10;
-            }
-        }
-        
-        System.out.println("g3 is test");// g3 is test
-        train(g1);
-        train(g2);
-        train(g4);
-        train(g5);
-        test(g3);
-        
-        //w1 = new double[3][15361]; // initialize weights
-        //w2 = new double[2][4];
-        for(int i = 0; i < w1.length; i++){
-            for(int j = 0; j < w1[0].length; j++){
-                w1[i][j] = 10;
-            }
-        }
-        for(int i = 0; i < w2.length; i++){
-            for(int j = 0; j < w2[0].length; j++){
-                w2[i][j] = 10;
-            }
-        }
-        
-        System.out.println("g4 is test");// g4 is test
-        train(g1);
-        train(g2);
-        train(g3);
-        train(g5);
-        test(g4);
-        
-        //w1 = new double[3][15361]; // initialize weights
-        //w2 = new double[2][4];
-        for(int i = 0; i < w1.length; i++){
-            for(int j = 0; j < w1[0].length; j++){
-                w1[i][j] = 10;
-            }
-        }
-        for(int i = 0; i < w2.length; i++){
-            for(int j = 0; j < w2[0].length; j++){
-                w2[i][j] = 10;
-            }
-        }
-        
-        System.out.println("g5 is test");// g5 is test
-        train(g1);
-        train(g2);
-        train(g3);
-        train(g4);
-        test(g5);
         
         
 
@@ -295,7 +308,7 @@ public class crossVal
         
         int[] input = new int[128*120];
         
-        for (int i = 1; i < files.length-1; ++i){ // for each training image
+        for (int i = 0; i < files.length; ++i){ // for each training image
             if ((joint.get(i)).result == 0){
                 dir = "Male/";
             }
@@ -427,7 +440,7 @@ public class crossVal
         
 
         
-        for (int i = 1; i < files.length-1; ++i){ // for each training image
+        for (int i = 0; i < files.length; ++i){ // for each training image
             //read in image array
             if ((joint.get(i)).result == 0){
                 dir = "Male/";
@@ -469,7 +482,7 @@ public class crossVal
             for (int j = 0; j < z1.length - 1; j++){
                 a1[j] = sigmoid(z1[j]); // apply sigmoid function to z1
             }
-            a1[3] = Math.random(); // initialize a1 bias constant in hidden layer ???CHECK????
+            a1[3] = 1; // initialize a1 bias constant in hidden layer ???CHECK????
             
             
             //compute z2
@@ -510,6 +523,98 @@ public class crossVal
         
         System.out.println("Correct predictions: "+ numCorrect +" out of "+ files.length);
     }
+    
+    
+    public static void test(String dir, File[] files) throws IOException {
+        double z1[] = new double[4]; // #hidden nodes
+        double z2[] = new double[2]; // #final nodes
+        
+        double a1[] = new double[4]; // #hidden nodes
+        double a2[] = new double[2]; // #final nodes      a2[0] = 1 if male    a2[1] = 1 if female
+        
+        double[] normInput = new double[128*120];
+        int max, min;
+        
+        int[] input = new int[128*120];
+        
+        
+        
+        for (int i = 0; i < files.length; ++i){ // for each training image
+            //read in image array
+            System.out.println(i);
+            if (!files[i].getName().endsWith(".txt")) continue;
+            FileReader fr = new FileReader(dir+"/"+files[i].getName());
+            Scanner s = new Scanner(fr);
+            
+            max = 0;
+            min = 1000;
+            for (int j = 0; j < input.length; j++){
+                input[j] = s.nextInt();
+                if(input[j] < min)
+                    min = input[j];
+                if(input[j] > max)
+                    max = input[j];
+            }
+            
+            //normalize data
+            for(int j =  0; j < input.length; j++){
+                normInput[j] = (input[j] - min)/(max - min);
+            }
+            
+            
+            
+            //compute z1
+            for(int j = 0; j < w1.length; j++){
+                for(int x = 0; x < w1[0].length - 1; x++){
+                    z1[j] += w1[j][x]  * normInput[x];
+                }
+                z1[j] += w1[j][15360]; //add a0 bias
+            }
+            
+            
+            // compute a(l) for all layers
+            for (int j = 0; j < z1.length - 1; j++){
+                a1[j] = sigmoid(z1[j]); // apply sigmoid function to z1
+            }
+            a1[3] = 1; // initialize a1 bias constant in hidden layer ???CHECK????
+            
+            
+            //compute z2
+            for(int j = 0; j < w2.length; j++){
+                for(int x = 0; x < w2[0].length; x++){
+                    z2[j] += w2[j][x] * a1[x];  // uses weights in second layer to produce z2
+                }
+            }
+            
+            for (int k = 0; k < z2.length; ++k){
+                a2[k] = sigmoid(z2[k]);
+            }
+            
+            //results
+            if(a2[0] >= a2[1]){ //predicts male
+                System.out.println("Predicts: Male\n"+files[i].getName());
+                System.out.println("Likelihood Male: "+a2[0]+"   Likelihood Female: "+a2[1]);
+            }
+            else{//predicts female
+                System.out.println("Predicts: Female\n"+files[i].getName());
+                System.out.println("Likelihood Male: "+a2[0]+"   Likelihood Female: "+a2[1]);
+            }
+            
+            
+            //reset z1, z2, a1, a2
+            for(int j = 0; j < z1.length; j++){
+                z1[j] = 0;
+                a1[j] = 0;
+            }
+            for(int j = 0; j < z2.length; j++){
+                z2[j] = 0;
+                a2[j] = 0;
+            }
+            
+        }//end training loop
+    }
+
+    
 
     
     public static double sigmoid (double z) { // ACTIVATION FUNCTION
