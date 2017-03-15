@@ -11,8 +11,6 @@ public class crossVal
 {
     public static double [][] w1;
     public static double [][] w2;
-    public static double [][] w3;
-    
     
     public static class Joint {
         int result;
@@ -156,26 +154,16 @@ public class crossVal
             }
             
         }
-        w1 = new double[3][15360]; // initialize weights
-        w2 = new double[3][3];
-        w3 = new double[2][3];
-        
-        Random r = new Random();
-        
-        
+        w1 = new double[3][15361]; // initialize weights
+        w2 = new double[2][4];
         for(int i = 0; i < w1.length; i++){
             for(int j = 0; j < w1[0].length; j++){
-                w1[i][j] = 1;
+                w1[i][j] = 10;
             }
         }
         for(int i = 0; i < w2.length; i++){
             for(int j = 0; j < w2[0].length; j++){
-                w2[i][j] = 1;
-            }
-        }
-        for(int i = 0; i < w3.length; i++){
-            for(int j = 0; j < w3[0].length; j++){
-                w3[i][j] = 1;
+                w2[i][j] = 10;
             }
         }
         
@@ -192,17 +180,12 @@ public class crossVal
             //w2 = new double[2][4];
             for(int i = 0; i < w1.length; i++){
                 for(int j = 0; j < w1[0].length; j++){
-                    w1[i][j] = 1;
+                    w1[i][j] = 10;
                 }
             }
             for(int i = 0; i < w2.length; i++){
                 for(int j = 0; j < w2[0].length; j++){
-                    w2[i][j] = 1;
-                }
-            }
-            for(int i = 0; i < w3.length; i++){
-                for(int j = 0; j < w3[0].length; j++){
-                    w3[i][j] = 1;
+                    w2[i][j] = 10;
                 }
             }
             
@@ -217,17 +200,12 @@ public class crossVal
             //w2 = new double[2][4];
             for(int i = 0; i < w1.length; i++){
                 for(int j = 0; j < w1[0].length; j++){
-                    w1[i][j] = 1;
+                    w1[i][j] = 10;
                 }
             }
             for(int i = 0; i < w2.length; i++){
                 for(int j = 0; j < w2[0].length; j++){
-                    w2[i][j] = 1;
-                }
-            }
-            for(int i = 0; i < w3.length; i++){
-                for(int j = 0; j < w3[0].length; j++){
-                    w3[i][j] = 1;
+                    w2[i][j] = 10;
                 }
             }
             
@@ -242,17 +220,12 @@ public class crossVal
             //w2 = new double[2][4];
             for(int i = 0; i < w1.length; i++){
                 for(int j = 0; j < w1[0].length; j++){
-                    w1[i][j] = 5;
+                    w1[i][j] = 10;
                 }
             }
             for(int i = 0; i < w2.length; i++){
                 for(int j = 0; j < w2[0].length; j++){
-                    w2[i][j] = 5;
-                }
-            }
-            for(int i = 0; i < w3.length; i++){
-                for(int j = 0; j < w3[0].length; j++){
-                    w3[i][j] = 5;
+                    w2[i][j] = 10;
                 }
             }
             
@@ -267,17 +240,12 @@ public class crossVal
             //w2 = new double[2][4];
             for(int i = 0; i < w1.length; i++){
                 for(int j = 0; j < w1[0].length; j++){
-                    w1[i][j] = r.nextInt(3);
+                    w1[i][j] = 10;
                 }
             }
             for(int i = 0; i < w2.length; i++){
                 for(int j = 0; j < w2[0].length; j++){
-                    w2[i][j] = r.nextInt(3);
-                }
-            }
-            for(int i = 0; i < w3.length; i++){
-                for(int j = 0; j < w3[0].length; j++){
-                    w3[i][j] = r.nextInt(3);
+                    w2[i][j] = 10;
                 }
             }
             
@@ -313,20 +281,17 @@ public class crossVal
     
     public static void train (List<Joint> joint) throws IOException {
     
-        double z1[] = new double[3]; // #hidden nodes
-        double z2[] = new double[3]; // #hidden nodes
-        double z3[] = new double[2]; // #final nodes
+        double z1[] = new double[4]; // #hidden nodes
+        double z2[] = new double[2]; // #final nodes
         
-        double a1[] = new double[3]; // #hidden nodes
-        double a2[] = new double[3]; // #hidden nodes
-        double a3[] = new double[2]; // #final nodes      a2[0] = 1 if male    a2[1] = 1 if female
+        double a1[] = new double[4]; // #hidden nodes
+        double a2[] = new double[2]; // #final nodes      a2[0] = 1 if male    a2[1] = 1 if female
         
         double l1[] = new double[3]; // learning error for hidden layer
-        double l2[] = new double[3]; // learning error for hidden layer
-        double l3[] = new double[2]; // learning error for the final layer
+        double l2[] = new double[2]; // learning error for the final layer
         
         
-        double learnRate = 1;
+        double learnRate = .05;
         
         double[] normInput = new double[128*120];
         int max, min;
@@ -379,78 +344,59 @@ public class crossVal
             //System.out.println("Computing z1");
             for(int j = 0; j < w1.length; j++){
                 for(int x = 0; x < w1[0].length - 1; x++){
+
                     z1[j] += w1[j][x]  * normInput[x];
                 }
+                z1[j] += w1[j][15360]; //add a0 bias
                 //System.out.print(z1[j]+" ");
             }
             
             
             // compute a(l) for all layers
             //System.out.println("\nComputing a1");
-            for (int j = 0; j < z1.length; j++){
+            for (int j = 0; j < z1.length - 1; j++){
                 a1[j] = sigmoid(z1[j]); // apply sigmoid function to z1
                 //System.out.print(a1[j]+" ");
             }
+            a1[3] = 10; // initialize a1 bias constant in hidden layer
+            
             
             //compute z2
+            //System.out.println("\nComputing z2");
             for(int j = 0; j < w2.length; j++){
-                for(int x = 0; x <w2[0].length; x++){
-                    z2[j] += w2[j][x] * a1[x];
-                }
-            }
-            
-            //compute a2
-            for(int j = 0; j < z2.length; j++){
-                a2[j] = sigmoid(z2[j]);
-            }
-            
-    
-            
-            //compute z3
-            //System.out.println("\nComputing z3");
-            for(int j = 0; j < w3.length; j++){
-                for(int x = 0; x < w3[0].length; x++){
-                    z3[j] += w3[j][x] * a2[x];  // uses weights in second layer to produce z2
+                for(int x = 0; x < w2[0].length; x++){
+                    z2[j] += w2[j][x] * a1[x];  // uses weights in second layer to produce z2
                     //System.out.print(z2[j]+" ");
                 }
             }
             
-            //System.out.println("\nComputing a3");
-            for (int k = 0; k < z3.length; ++k){
-                a3[k] = sigmoid(z3[k]);
+            //System.out.println("\nComputing a1");
+            for (int k = 0; k < z2.length; ++k){
+                a2[k] = sigmoid(z2[k]);
                 //System.out.print(a1[k]+" ");
             }
             
-            l3[0] = a3[0] - (joint.get(i)).result;
-            l3[1] = a3[1] - (joint.get(i)).result;
+            l2[0] = a2[0] - (joint.get(i)).result;
+            l2[1] = a2[1] - (joint.get(i)).result;
             
+            //l2[0] = a2[0] - output[i][0];
+            //l2[1] = a2[1] - output[i][1]; // compute error in final layer
             
-            //FIXXXX
-            for(int q = 0; q < l2.length; q++){ //compute error for hidden layer
-                l2[q] = (w3[0][q]*l3[0] + w3[1][q]*l3[1]) * a2[q] * (1-a2[q]);
-            }
             
             for(int q = 0; q < l1.length; q++){ //compute error for hidden layer
-                l1[q] = (w2[0][q]*l2[0] + w2[1][q]*l2[1] + w2[2][q]*l2[2]) * a1[q] * (1-a1[q]);
+                l1[q] = (w2[0][q]*l2[0] + w2[1][q]*l2[1]) * a1[q] * (1-a1[q]);
             }
-            
-            
             
             for(int j = 0; j < w1.length; j++){ // update weights for w1
                 for(int x = 0; x < w1[0].length; x++){
                     w1[j][x] -= learnRate * (a1[j] * l1[j]);
                 }
             }
-            for(int j = 0; j < w2.length; j++){ // update weights for w1
+            
+            //System.out.println("\nUpdating w2");
+            for(int j = 0; j < w2.length; j++){ // update weights for w2
                 for(int x = 0; x < w2[0].length; x++){
                     w2[j][x] -= learnRate * (a2[j] * l2[j]);
-                }
-            }
-            
-            //System.out.println("\nUpdating w3");
-            for(int j = 0; j < w3.length; j++){ // update weights for w2
-                for(int x = 0; x < w3[0].length; x++){
-                    w3[j][x] -= learnRate * (a3[j] * l3[j]);
                     //System.out.println(w2[j][x]+" ");
                 }
             }
@@ -468,21 +414,15 @@ public class crossVal
                 z2[j] = 0;
                 a2[j] = 0;
             }
-            for(int j = 0; j < z3.length; j++){
-                z3[j] = 0;
-                a3[j] = 0;
-            }
         }
     }
     
     public static void test(List<Joint> joint) throws IOException {
-        double z1[] = new double[3]; // #hidden nodes
-        double z2[] = new double[3]; // #hidden nodes
-        double z3[] = new double[2]; // #final nodes
+        double z1[] = new double[4]; // #hidden nodes
+        double z2[] = new double[2]; // #final nodes
         
-        double a1[] = new double[3]; // #hidden nodes
-        double a2[] = new double[3]; // #hidden nodes
-        double a3[] = new double[2]; // #final nodes      a2[0] = 1 if male    a2[1] = 1 if female
+        double a1[] = new double[4]; // #hidden nodes
+        double a2[] = new double[2]; // #final nodes      a2[0] = 1 if male    a2[1] = 1 if female
         
         double[] normInput = new double[128*120];
         int max, min;
@@ -534,39 +474,30 @@ public class crossVal
                 for(int x = 0; x < w1[0].length - 1; x++){
                     z1[j] += w1[j][x]  * normInput[x];
                 }
+                z1[j] += w1[j][15360]; //add a0 bias
             }
             
             
             // compute a(l) for all layers
-            for (int j = 0; j < z1.length; j++){
+            for (int j = 0; j < z1.length - 1; j++){
                 a1[j] = sigmoid(z1[j]); // apply sigmoid function to z1
             }
+            a1[3] = 1; // initialize a1 bias constant in hidden layer ???CHECK????
+            
             
             //compute z2
             for(int j = 0; j < w2.length; j++){
-                for(int x = 0; x <w2[0].length; x++){
-                    z2[j] += w2[j][x] * a1[x];
+                for(int x = 0; x < w2[0].length; x++){
+                    z2[j] += w2[j][x] * a1[x];  // uses weights in second layer to produce z2
                 }
             }
             
-            //compute a2
-            for(int j = 0; j < z2.length; j++){
-                a2[j] = sigmoid(z2[j]);
-            }
-            
-            //compute z3
-            for(int j = 0; j < w3.length; j++){
-                for(int x = 0; x < w3[0].length; x++){
-                    z3[j] += w3[j][x] * a2[x];  // uses weights in second layer to produce z2
-                }
-            }
-            
-            for (int k = 0; k < z3.length; ++k){
-                a3[k] = sigmoid(z3[k]);
+            for (int k = 0; k < z2.length; ++k){
+                a2[k] = sigmoid(z2[k]);
             }
             
             //results
-            if(a3[0] <= a3[1]){ //predicts male
+            if(a2[0] >= a2[1]){ //predicts male
                 if (dir == "Male/"){
                     numCorrect++;
                 }
@@ -587,10 +518,6 @@ public class crossVal
                 z2[j] = 0;
                 a2[j] = 0;
             }
-            for(int j = 0; j < z3.length; j++){
-                z3[j] = 0;
-                a3[j] = 0;
-            }
             
         }//end training loop
         
@@ -599,13 +526,11 @@ public class crossVal
     
     
     public static void test(String dir, File[] files) throws IOException {
-        double z1[] = new double[3]; // #hidden nodes
-        double z2[] = new double[3]; // #hidden nodes
-        double z3[] = new double[2]; // #final nodes
+        double z1[] = new double[4]; // #hidden nodes
+        double z2[] = new double[2]; // #final nodes
         
-        double a1[] = new double[3]; // #hidden nodes
-        double a2[] = new double[3]; // #hidden nodes
-        double a3[] = new double[2]; // #final nodes      a2[0] = 1 if male    a2[1] = 1 if female
+        double a1[] = new double[4]; // #hidden nodes
+        double a2[] = new double[2]; // #final nodes      a2[0] = 1 if male    a2[1] = 1 if female
         
         double[] normInput = new double[128*120];
         int max, min;
@@ -615,7 +540,8 @@ public class crossVal
         
         
         for (int i = 0; i < files.length; ++i){ // for each training image
-            //read in image array=
+            //read in image array
+            System.out.println(i);
             if (!files[i].getName().endsWith(".txt")) continue;
             FileReader fr = new FileReader(dir+"/"+files[i].getName());
             Scanner s = new Scanner(fr);
@@ -635,49 +561,43 @@ public class crossVal
                 normInput[j] = (input[j] - min)/(max - min);
             }
             
+            
+            
             //compute z1
             for(int j = 0; j < w1.length; j++){
                 for(int x = 0; x < w1[0].length - 1; x++){
                     z1[j] += w1[j][x]  * normInput[x];
                 }
+                z1[j] += w1[j][15360]; //add a0 bias
             }
             
+            
             // compute a(l) for all layers
-            for (int j = 0; j < z1.length; j++){
+            for (int j = 0; j < z1.length - 1; j++){
                 a1[j] = sigmoid(z1[j]); // apply sigmoid function to z1
             }
+            a1[3] = 1; // initialize a1 bias constant in hidden layer ???CHECK????
+            
             
             //compute z2
             for(int j = 0; j < w2.length; j++){
-                for(int x = 0; x <w2[0].length; x++){
-                    z2[j] += w2[j][x] * a1[x];
+                for(int x = 0; x < w2[0].length; x++){
+                    z2[j] += w2[j][x] * a1[x];  // uses weights in second layer to produce z2
                 }
             }
             
-            //compute a2
-            for(int j = 0; j < z2.length; j++){
-                a2[j] = sigmoid(z2[j]);
-            }
-            
-            //compute z3
-            for(int j = 0; j < w3.length; j++){
-                for(int x = 0; x < w3[0].length; x++){
-                    z3[j] += w3[j][x] * a2[x];  // uses weights in second layer to produce z2
-                }
-            }
-            
-            for (int k = 0; k < z3.length; ++k){
-                a3[k] = sigmoid(z3[k]);
+            for (int k = 0; k < z2.length; ++k){
+                a2[k] = sigmoid(z2[k]);
             }
             
             //results
-            if(a3[0] <= a3[1]){ //predicts male
+            if(a2[0] >= a2[1]){ //predicts male
                 System.out.println("Predicts: Male\n"+files[i].getName());
-                System.out.println("Likelihood Male: "+a3[0]+"   Likelihood Female: "+a3[1]);
+                System.out.println("Likelihood Male: "+a2[0]+"   Likelihood Female: "+a2[1]);
             }
             else{//predicts female
                 System.out.println("Predicts: Female\n"+files[i].getName());
-                System.out.println("Likelihood Male: "+a3[0]+"   Likelihood Female: "+a3[1]);
+                System.out.println("Likelihood Male: "+a2[0]+"   Likelihood Female: "+a2[1]);
             }
             
             
@@ -689,10 +609,6 @@ public class crossVal
             for(int j = 0; j < z2.length; j++){
                 z2[j] = 0;
                 a2[j] = 0;
-            }
-            for(int j = 0; j < z3.length; j++){
-                z3[j] = 0;
-                a3[j] = 0;
             }
             
         }//end training loop

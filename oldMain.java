@@ -13,6 +13,8 @@ public class Main
     /// Prints the commandline instructions.
     public static void main(String[] args) throws IOException
     {
+       
+        
         //load Male folder
         final File maleFolder = new File ("Male/");
         File [] maleFiles = maleFolder.listFiles();
